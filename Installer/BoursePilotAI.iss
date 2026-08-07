@@ -8,7 +8,8 @@ Compression=lzma
 SolidCompression=yes
 
 [Files]
-Source: "..\Source_Code\*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "..\Release\InstallerFiles\BoursePilotAI.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\README.md"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\BoursePilotAI"; Filename: "{app}\BoursePilotAI.exe"
