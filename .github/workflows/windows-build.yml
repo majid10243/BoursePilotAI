@@ -1,0 +1,14 @@
+name: Windows Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build preparation
+        run: echo Preparing BoursePilotAI Windows build
+      - name: Release preparation
+        run: echo Preparing Setup artifact
