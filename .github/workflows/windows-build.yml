@@ -23,3 +23,9 @@ jobs:
 
       - name: Package release
         run: echo Prepare release artifact
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BoursePilotAI_Setup
+          path: Release/
