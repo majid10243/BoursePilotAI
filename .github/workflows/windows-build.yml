@@ -15,17 +15,21 @@ jobs:
       - name: Prepare build environment
         run: echo Preparing BoursePilotAI Windows build
 
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
       - name: Build application
         run: echo Build application binaries
 
       - name: Compile installer
-        run: echo Generate BoursePilotAI_Setup.exe
+        run: |
+          iscc Installer/BoursePilotAI.iss
 
-      - name: Package release
-        run: echo Prepare release artifact
+      - name: Verify installer
+        run: dir Release
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
           name: BoursePilotAI_Setup
-          path: Release/
+          path: Release/BoursePilotAI_Setup.exe
