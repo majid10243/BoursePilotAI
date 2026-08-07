@@ -1,0 +1,21 @@
+name: Release Automation
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build release
+        run: echo Build BoursePilotAI release
+
+      - name: Create release package
+        run: echo Package BoursePilotAI_Setup.exe
+
+      - name: Publish release
+        run: echo Publish GitHub Release
