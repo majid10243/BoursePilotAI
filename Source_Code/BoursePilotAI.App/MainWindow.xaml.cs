@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace BoursePilotAI.App;
+namespace BoursePilotAI;
 
 public partial class MainWindow : Window
 {
