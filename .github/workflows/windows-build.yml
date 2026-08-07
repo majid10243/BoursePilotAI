@@ -2,13 +2,24 @@ name: Windows Build
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build preparation
+
+      - name: Prepare build environment
         run: echo Preparing BoursePilotAI Windows build
-      - name: Release preparation
-        run: echo Preparing Setup artifact
+
+      - name: Build application
+        run: echo Build application binaries
+
+      - name: Compile installer
+        run: echo Generate BoursePilotAI_Setup.exe
+
+      - name: Package release
+        run: echo Prepare release artifact
