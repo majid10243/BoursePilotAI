@@ -1,3 +1,8 @@
-# Documentation
+# BoursePilotAI Documentation
 
-Project documentation.
+Project documentation area.
+
+Includes:
+- Build notes
+- Usage guides
+- Release information
