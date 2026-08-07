@@ -1,0 +1,5 @@
+{
+  "project": "BoursePilotAI",
+  "stage": "github_release_preparation",
+  "installer_target": "BoursePilotAI_Setup.exe"
+}
