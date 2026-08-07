@@ -12,18 +12,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Prepare build environment
-        run: echo Preparing BoursePilotAI Windows build
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore project
+        run: dotnet restore Source_Code/BoursePilotAI.App/BoursePilotAI.App.csproj
+
+      - name: Publish application
+        run: dotnet publish Source_Code/BoursePilotAI.App/BoursePilotAI.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o Release/App
 
       - name: Install Inno Setup
         run: choco install innosetup -y
 
-      - name: Build application
-        run: echo Build application binaries
+      - name: Prepare installer files
+        run: |
+          mkdir Release/InstallerFiles
+          copy Release\App\BoursePilotAI.exe Release\InstallerFiles\BoursePilotAI.exe
 
       - name: Compile installer
-        run: |
-          iscc Installer/BoursePilotAI.iss
+        run: iscc Installer/BoursePilotAI.iss
 
       - name: Verify installer
         run: dir Release
