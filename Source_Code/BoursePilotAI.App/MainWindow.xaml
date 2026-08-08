@@ -7,7 +7,6 @@
    <ColumnDefinition Width="220"/>
    <ColumnDefinition Width="*"/>
   </Grid.ColumnDefinitions>
-
   <Border Grid.Column="0" Background="#202020">
    <StackPanel>
     <TextBlock Text="BoursePilotAI" Foreground="White" FontSize="24" Margin="20"/>
@@ -18,27 +17,26 @@
     <Button Content="⚙ تنظیمات" Margin="10" Height="40"/>
    </StackPanel>
   </Border>
-
   <ScrollViewer Grid.Column="1" Margin="25">
    <StackPanel>
     <TextBlock Text="داشبورد بازار" FontSize="32"/>
     <TextBlock Text="نمای کلی وضعیت بورس و تحلیل هوشمند" FontSize="18" Margin="0,10,0,20"/>
-
-    <DataGrid AutoGenerateColumns="False" Height="220" Margin="5">
-     <DataGrid.Columns>
-      <DataGridTextColumn Header="نماد" Binding="{Binding Symbol}"/>
-      <DataGridTextColumn Header="قیمت" Binding="{Binding Price}"/>
-      <DataGridTextColumn Header="تغییر" Binding="{Binding Change}"/>
-      <DataGridTextColumn Header="وضعیت" Binding="{Binding Status}"/>
-     </DataGrid.Columns>
+    <Grid>
+     <Grid.ColumnDefinitions>
+      <ColumnDefinition/><ColumnDefinition/><ColumnDefinition/>
+     </Grid.ColumnDefinitions>
+     <Border Grid.Column="0" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="شاخص کل"/><TextBlock Text="2,150,000" FontSize="26"/></StackPanel></Border>
+     <Border Grid.Column="1" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="وضعیت بازار"/><TextBlock Text="مثبت" FontSize="26"/></StackPanel></Border>
+     <Border Grid.Column="2" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="سیگنال AI"/><TextBlock Text="در حال تحلیل" FontSize="26"/></StackPanel></Border>
+    </Grid>
+    <TextBlock Text="نمادهای منتخب" FontSize="24" Margin="5,25,5,10"/>
+    <DataGrid AutoGenerateColumns="True" Height="200" Margin="5">
+     <DataGrid.Items>
+      <local:StockItem Symbol="فولاد" Price="5200" Change="+2%" Status="خرید"/>
+      <local:StockItem Symbol="شستا" Price="1450" Change="-1%" Status="نگهداری"/>
+      <local:StockItem Symbol="خودرو" Price="320" Change="+0.5%" Status="بررسی"/>
+     </DataGrid.Items>
     </DataGrid>
-
-    <Border BorderThickness="1" Padding="20" Margin="5,20,5,5">
-     <StackPanel>
-      <TextBlock Text="تحلیل هوشمند AI" FontSize="22"/>
-      <TextBlock Text="آماده دریافت و تحلیل داده‌های بازار" Margin="0,10,0,0"/>
-     </StackPanel>
-    </Border>
    </StackPanel>
   </ScrollViewer>
  </Grid>
