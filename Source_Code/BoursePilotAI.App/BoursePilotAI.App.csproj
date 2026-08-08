@@ -5,6 +5,5 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>BoursePilotAI</AssemblyName>
     <RootNamespace>BoursePilotAI</RootNamespace>
-    <StartupObject>BoursePilotAI.Program</StartupObject>
   </PropertyGroup>
 </Project>
