@@ -1,6 +1,7 @@
 <Window x:Class="BoursePilotAI.MainWindow"
  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:local="clr-namespace:BoursePilotAI"
  Title="BoursePilotAI" Height="650" Width="1100">
  <Grid>
   <Grid.ColumnDefinitions>
@@ -22,12 +23,10 @@
     <TextBlock Text="داشبورد بازار" FontSize="32"/>
     <TextBlock Text="نمای کلی وضعیت بورس و تحلیل هوشمند" FontSize="18" Margin="0,10,0,20"/>
     <Grid>
-     <Grid.ColumnDefinitions>
-      <ColumnDefinition/><ColumnDefinition/><ColumnDefinition/>
-     </Grid.ColumnDefinitions>
+     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
      <Border Grid.Column="0" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="شاخص کل"/><TextBlock Text="2,150,000" FontSize="26"/></StackPanel></Border>
      <Border Grid.Column="1" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="وضعیت بازار"/><TextBlock Text="مثبت" FontSize="26"/></StackPanel></Border>
-     <Border Grid.Column="2" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="سیگنال AI"/><TextBlock Text="در حال تحلیل" FontSize="26"/></StackPanel></Border>
+     <Border Grid.Column="2" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="سیگنال AI"/><TextBlock Text="آماده تحلیل" FontSize="26"/></StackPanel></Border>
     </Grid>
     <TextBlock Text="نمادهای منتخب" FontSize="24" Margin="5,25,5,10"/>
     <DataGrid AutoGenerateColumns="True" Height="200" Margin="5">
