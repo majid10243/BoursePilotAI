@@ -24,36 +24,19 @@
     <TextBlock Text="داشبورد بازار" FontSize="32"/>
     <TextBlock Text="نمای کلی وضعیت بورس و تحلیل هوشمند" FontSize="18" Margin="0,10,0,20"/>
 
-    <Grid>
-     <Grid.ColumnDefinitions>
-      <ColumnDefinition/>
-      <ColumnDefinition/>
-      <ColumnDefinition/>
-     </Grid.ColumnDefinitions>
-     <Border Grid.Column="0" BorderThickness="1" Padding="20" Margin="5">
-      <StackPanel>
-       <TextBlock Text="شاخص کل" FontSize="18"/>
-       <TextBlock Text="--" FontSize="30"/>
-      </StackPanel>
-     </Border>
-     <Border Grid.Column="1" BorderThickness="1" Padding="20" Margin="5">
-      <StackPanel>
-       <TextBlock Text="وضعیت بازار" FontSize="18"/>
-       <TextBlock Text="در انتظار داده" FontSize="22"/>
-      </StackPanel>
-     </Border>
-     <Border Grid.Column="2" BorderThickness="1" Padding="20" Margin="5">
-      <StackPanel>
-       <TextBlock Text="سیگنال AI" FontSize="18"/>
-       <TextBlock Text="آماده تحلیل" FontSize="22"/>
-      </StackPanel>
-     </Border>
-    </Grid>
+    <DataGrid AutoGenerateColumns="False" Height="220" Margin="5">
+     <DataGrid.Columns>
+      <DataGridTextColumn Header="نماد" Binding="{Binding Symbol}"/>
+      <DataGridTextColumn Header="قیمت" Binding="{Binding Price}"/>
+      <DataGridTextColumn Header="تغییر" Binding="{Binding Change}"/>
+      <DataGridTextColumn Header="وضعیت" Binding="{Binding Status}"/>
+     </DataGrid.Columns>
+    </DataGrid>
 
-    <Border BorderThickness="1" Padding="20" Margin="5,25,5,5">
+    <Border BorderThickness="1" Padding="20" Margin="5,20,5,5">
      <StackPanel>
-      <TextBlock Text="نمادهای منتخب" FontSize="22"/>
-      <TextBlock Text="جدول نمادها در مرحله بعد اضافه می‌شود" Margin="0,10,0,0"/>
+      <TextBlock Text="تحلیل هوشمند AI" FontSize="22"/>
+      <TextBlock Text="آماده دریافت و تحلیل داده‌های بازار" Margin="0,10,0,0"/>
      </StackPanel>
     </Border>
    </StackPanel>
