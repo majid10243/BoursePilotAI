@@ -1,0 +1,44 @@
+name: Windows Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore project
+        run: dotnet restore Source_Code/BoursePilotAI.App/BoursePilotAI.App.csproj
+
+      - name: Publish application
+        run: dotnet publish Source_Code/BoursePilotAI.App/BoursePilotAI.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -o Release/App
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Prepare installer files
+        run: |
+          mkdir Release/InstallerFiles
+          xcopy Release\App\* Release\InstallerFiles\ /E /I /Y
+
+      - name: Compile installer
+        run: iscc Installer/BoursePilotAI.iss
+
+      - name: Verify installer
+        run: dir Release
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BoursePilotAI_Setup
+          path: Release/BoursePilotAI_Setup.exe

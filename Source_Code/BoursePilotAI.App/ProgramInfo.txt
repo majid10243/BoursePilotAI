@@ -1,0 +1,4 @@
+BoursePilotAI Desktop Application
+Framework: .NET 8 WPF
+Target: Windows x64
+Output: BoursePilotAI.exe
