@@ -1,0 +1,47 @@
+name: Build BoursePilotAI Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore Source_Code/BoursePilotAI.App/BoursePilotAI.App.csproj
+
+      - name: Publish Self Contained
+        run: |
+          dotnet publish Source_Code/BoursePilotAI.App/BoursePilotAI.App.csproj `
+          -c Release `
+          -r win-x64 `
+          --self-contained true `
+          -p:PublishSingleFile=false `
+          -o Release/InstallerFiles
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build Installer
+        run: |
+          ISCC.exe Installer/BoursePilotAI.iss
+
+      - name: Upload Setup
+        uses: actions/upload-artifact@v4
+        with:
+          name: BoursePilotAI-Setup
+          path: |
+            Release/**/*.exe
+            Installer/**/*.exe
