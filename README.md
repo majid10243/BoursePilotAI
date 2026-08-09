@@ -1,14 +1,48 @@
 # BoursePilotAI
 
-Private repository for BoursePilotAI.
+دستیار دسکتاپ تحلیل بازار سرمایه ایران با رابط WPF و .NET 8.
 
-## Structure
-- Source_Code
-- Installer
-- Documentation
-- Tests
-- Configuration
-- Release
+## قابلیت‌های فعلی
 
-Target output:
-`BoursePilotAI_Setup.exe`
+- دریافت خودکار دیدبان بازار از TSETMC
+- دریافت تاریخچه روزانه نمادهای پرتراکنش و نگهداری محلی آن
+- دریافت آخرین اطلاعیه‌های Codal
+- نمایش درصد و مرحله به‌روزرسانی در خود برنامه
+- ادامه کار با آخرین داده ذخیره‌شده هنگام قطعی منبع یا اینترنت
+- داشبورد، جستجوی نماد، اسکنر، تحلیل اولیه و مرور اطلاعیه‌های کدال
+- محاسبه SMA 5/20، RSI 14، مومنتوم 5 روزه، نسبت حجم و امتیاز توضیح‌پذیر
+- تنظیم فاصله به‌روزرسانی، عمق تاریخچه و تعداد نمادهای تحلیل‌شونده
+
+## اجرا برای توسعه
+
+نیازمندی‌ها:
+
+- Windows 10/11
+- .NET 8 SDK
+
+```powershell
+dotnet restore Source_Code/BoursePilotAI.App/BoursePilotAI.App.csproj
+dotnet run --project Source_Code/BoursePilotAI.App/BoursePilotAI.App.csproj
+```
+
+برنامه در اولین اجرا، داده‌ها را دریافت و در مسیر زیر ذخیره می‌کند:
+
+```text
+%LOCALAPPDATA%\BoursePilotAI\Data
+```
+
+تاریخچه هر نماد حداکثر روزی یک بار به‌روزرسانی می‌شود. دیدبان بازار و کدال بر اساس فاصله تعیین‌شده در تنظیمات تازه می‌شوند.
+
+## ساخت Installer
+
+گردش‌کار `Build BoursePilotAI Installer` در GitHub Actions برنامه را برای Windows x64 منتشر و فایل زیر را ایجاد می‌کند:
+
+```text
+BoursePilotAI_Setup.exe
+```
+
+## نکات داده و تحلیل
+
+رابط عمومی TSETMC ممکن است بدون اطلاع قبلی تغییر کند یا موقتاً پاسخ 403/429 بدهد. برنامه سه بار تلاش می‌کند و سپس به کش محلی برمی‌گردد. برای جزئیات، [مستند منابع داده](Documentation/DATA_SOURCES.md) را ببینید.
+
+امتیازهای برنامه صرفاً خروجی محاسبات آماری هستند و توصیه خرید یا فروش محسوب نمی‌شوند.

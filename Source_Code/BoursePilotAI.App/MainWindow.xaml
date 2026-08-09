@@ -1,42 +1,417 @@
 <Window x:Class="BoursePilotAI.MainWindow"
- xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
- xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
- xmlns:local="clr-namespace:BoursePilotAI"
- Title="BoursePilotAI" Height="650" Width="1100">
- <Grid>
-  <Grid.ColumnDefinitions>
-   <ColumnDefinition Width="220"/>
-   <ColumnDefinition Width="*"/>
-  </Grid.ColumnDefinitions>
-  <Border Grid.Column="0" Background="#202020">
-   <StackPanel>
-    <TextBlock Text="BoursePilotAI" Foreground="White" FontSize="24" Margin="20"/>
-    <Button Content="🏠 داشبورد" Margin="10" Height="40"/>
-    <Button Content="📈 تحلیل سهام" Margin="10" Height="40"/>
-    <Button Content="🔍 جستجوی نماد" Margin="10" Height="40"/>
-    <Button Content="📄 گزارش‌ها" Margin="10" Height="40"/>
-    <Button Content="⚙ تنظیمات" Margin="10" Height="40"/>
-   </StackPanel>
-  </Border>
-  <ScrollViewer Grid.Column="1" Margin="25">
-   <StackPanel>
-    <TextBlock Text="داشبورد بازار" FontSize="32"/>
-    <TextBlock Text="نمای کلی وضعیت بورس و تحلیل هوشمند" FontSize="18" Margin="0,10,0,20"/>
-    <Grid>
-     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-     <Border Grid.Column="0" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="شاخص کل"/><TextBlock Text="2,150,000" FontSize="26"/></StackPanel></Border>
-     <Border Grid.Column="1" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="وضعیت بازار"/><TextBlock Text="مثبت" FontSize="26"/></StackPanel></Border>
-     <Border Grid.Column="2" BorderThickness="1" Padding="20" Margin="5"><StackPanel><TextBlock Text="سیگنال AI"/><TextBlock Text="آماده تحلیل" FontSize="26"/></StackPanel></Border>
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="BoursePilotAI"
+        Width="1280"
+        Height="780"
+        MinWidth="1050"
+        MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F6FA"
+        FlowDirection="RightToLeft"
+        Loaded="MainWindow_Loaded"
+        Closing="MainWindow_Closing">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#2563EB"/>
+        <SolidColorBrush x:Key="SidebarBrush" Color="#0F172A"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#64748B"/>
+
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="#CBD5E1"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="Margin" Value="10,3"/>
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#1E293B"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="18,9"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="7"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.55"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="18"/>
+        </Style>
+
+        <Style x:Key="DataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#EEF2F7"/>
+            <Setter Property="RowHeight" Value="38"/>
+            <Setter Property="ColumnHeaderHeight" Value="42"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid FlowDirection="LeftToRight">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="{StaticResource SidebarBrush}" FlowDirection="RightToLeft">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Margin="20,24,20,20">
+                    <TextBlock Text="BoursePilotAI" Foreground="White" FontSize="24" FontWeight="SemiBold"/>
+                    <TextBlock Text="دستیار تحلیل بازار سرمایه" Foreground="#94A3B8" FontSize="12" Margin="0,6,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1">
+                    <Button Content="داشبورد بازار" Tag="Dashboard" Click="NavigationButton_Click" Style="{StaticResource NavButtonStyle}"/>
+                    <Button Content="تحلیل نماد" Tag="Analysis" Click="NavigationButton_Click" Style="{StaticResource NavButtonStyle}"/>
+                    <Button Content="اسکنر بازار" Tag="Scanner" Click="NavigationButton_Click" Style="{StaticResource NavButtonStyle}"/>
+                    <Button Content="جستجوی نماد" Tag="Search" Click="NavigationButton_Click" Style="{StaticResource NavButtonStyle}"/>
+                    <Button Content="اطلاعیه‌های کدال" Tag="Codal" Click="NavigationButton_Click" Style="{StaticResource NavButtonStyle}"/>
+                    <Button Content="تنظیمات" Tag="Settings" Click="NavigationButton_Click" Style="{StaticResource NavButtonStyle}"/>
+                </StackPanel>
+
+                <Border Grid.Row="2" Margin="16" Padding="12" Background="#1E293B" CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock Text="منابع داده" Foreground="#94A3B8" FontSize="11"/>
+                        <TextBlock Text="TSETMC  •  CODAL" Foreground="White" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" FlowDirection="RightToLeft">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="76"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="76"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="White" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+                <Grid Margin="24,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="PageTitleText" Text="داشبورد بازار" FontSize="23" FontWeight="SemiBold" Foreground="#0F172A"/>
+                        <TextBlock x:Name="LastUpdatedText" Text="در انتظار اولین به‌روزرسانی" FontSize="12" Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0"/>
+                    </StackPanel>
+                    <Button x:Name="RefreshButton"
+                            Grid.Column="1"
+                            Content="به‌روزرسانی اکنون"
+                            Click="RefreshButton_Click"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1" Margin="24,20,24,18">
+                <Grid x:Name="DashboardPage">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                            <StackPanel>
+                                <TextBlock Text="تعداد نمادها" Foreground="{StaticResource MutedBrush}"/>
+                                <TextBlock x:Name="MarketCountText" Text="۰" FontSize="27" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0">
+                            <StackPanel>
+                                <TextBlock Text="نمادهای مثبت" Foreground="{StaticResource MutedBrush}"/>
+                                <TextBlock x:Name="PositiveCountText" Text="۰" Foreground="#059669" FontSize="27" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource CardStyle}" Margin="8,0">
+                            <StackPanel>
+                                <TextBlock Text="نمادهای منفی" Foreground="{StaticResource MutedBrush}"/>
+                                <TextBlock x:Name="NegativeCountText" Text="۰" Foreground="#DC2626" FontSize="27" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="3" Style="{StaticResource CardStyle}" Margin="8,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="ارزش معاملات" Foreground="{StaticResource MutedBrush}"/>
+                                <TextBlock x:Name="MarketValueText" Text="۰" FontSize="24" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <TextBlock Grid.Row="1" Text="نمادهای پرتراکنش" FontSize="19" FontWeight="SemiBold" Margin="0,22,0,10"/>
+                    <DataGrid x:Name="DashboardDataGrid"
+                              Grid.Row="2"
+                              Style="{StaticResource DataGridStyle}"
+                              MouseDoubleClick="StockDataGrid_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="نماد" Binding="{Binding Symbol}" Width="100"/>
+                            <DataGridTextColumn Header="نام شرکت" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="قیمت پایانی" Binding="{Binding ClosingPrice, StringFormat={}{0:N0}}" Width="120"/>
+                            <DataGridTextColumn Header="تغییر پایانی" Binding="{Binding ClosingChangePercent, StringFormat={}{0:+0.00;-0.00;0.00}%}" Width="110"/>
+                            <DataGridTextColumn Header="حجم" Binding="{Binding Volume, StringFormat={}{0:N0}}" Width="130"/>
+                            <DataGridTextColumn Header="امتیاز" Binding="{Binding Score}" Width="80"/>
+                            <DataGridTextColumn Header="وضعیت" Binding="{Binding Status}" Width="110"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <Grid x:Name="AnalysisPage" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="انتخاب نماد برای تحلیل" Foreground="{StaticResource MutedBrush}"/>
+                            <ComboBox x:Name="AnalysisSymbolComboBox"
+                                      Width="320"
+                                      Margin="0,8,0,0"
+                                      HorizontalAlignment="Right"
+                                      DisplayMemberPath="Symbol"
+                                      SelectionChanged="AnalysisSymbolComboBox_SelectionChanged"/>
+                        </StackPanel>
+                    </Border>
+                    <Grid Grid.Row="1" Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                            <StackPanel><TextBlock Text="امتیاز تحلیل" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="AnalysisScoreText" Text="-" FontSize="28" Margin="0,8,0,0"/></StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0">
+                            <StackPanel><TextBlock Text="RSI (14)" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="AnalysisRsiText" Text="-" FontSize="28" Margin="0,8,0,0"/></StackPanel>
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource CardStyle}" Margin="8,0">
+                            <StackPanel><TextBlock Text="میانگین ۵ / ۲۰" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="AnalysisSmaText" Text="-" FontSize="20" Margin="0,11,0,0"/></StackPanel>
+                        </Border>
+                        <Border Grid.Column="3" Style="{StaticResource CardStyle}" Margin="8,0,0,0">
+                            <StackPanel><TextBlock Text="نسبت حجم" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="AnalysisVolumeText" Text="-" FontSize="28" Margin="0,8,0,0"/></StackPanel>
+                        </Border>
+                    </Grid>
+                    <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="0,16,0,0">
+                        <StackPanel>
+                            <TextBlock x:Name="AnalysisSymbolTitleText" Text="هنوز نمادی انتخاب نشده است" FontSize="22" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="AnalysisSummaryText" Text="پس از به‌روزرسانی، نماد موردنظر را انتخاب کنید." TextWrapping="Wrap" FontSize="16" Margin="0,16,0,0"/>
+                            <TextBlock Text="این امتیاز صرفاً خروجی محاسبات آماری اولیه است و توصیه خرید یا فروش محسوب نمی‌شود."
+                                       Foreground="#B45309" Background="#FFFBEB" Padding="12" Margin="0,22,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Grid x:Name="ScannerPage" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="220"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="ScannerSearchTextBox" TextChanged="ScannerFilter_Changed" Margin="0,0,10,0" ToolTip="نام یا نماد را وارد کنید"/>
+                            <ComboBox x:Name="ScannerStatusComboBox" Grid.Column="1" SelectionChanged="ScannerFilter_Changed" SelectedIndex="0">
+                                <ComboBoxItem Content="همه وضعیت‌ها"/>
+                                <ComboBoxItem Content="روند قوی"/>
+                                <ComboBoxItem Content="مثبت"/>
+                                <ComboBoxItem Content="خنثی"/>
+                                <ComboBoxItem Content="ضعیف"/>
+                                <ComboBoxItem Content="پرریسک"/>
+                            </ComboBox>
+                        </Grid>
+                    </Border>
+                    <DataGrid x:Name="ScannerDataGrid" Grid.Row="1" Style="{StaticResource DataGridStyle}" MouseDoubleClick="StockDataGrid_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="نماد" Binding="{Binding Symbol}" Width="90"/>
+                            <DataGridTextColumn Header="شرکت" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="آخرین %" Binding="{Binding LastChangePercent, StringFormat={}{0:+0.00;-0.00;0.00}%}" Width="90"/>
+                            <DataGridTextColumn Header="پایانی %" Binding="{Binding ClosingChangePercent, StringFormat={}{0:+0.00;-0.00;0.00}%}" Width="90"/>
+                            <DataGridTextColumn Header="RSI" Binding="{Binding Rsi14, StringFormat={}{0:N1}}" Width="75"/>
+                            <DataGridTextColumn Header="مومنتوم ۵روزه" Binding="{Binding Momentum5, StringFormat={}{0:+0.00;-0.00;0.00}%}" Width="120"/>
+                            <DataGridTextColumn Header="نسبت حجم" Binding="{Binding VolumeRatio, StringFormat={}{0:N2}}" Width="90"/>
+                            <DataGridTextColumn Header="امتیاز" Binding="{Binding Score}" Width="75"/>
+                            <DataGridTextColumn Header="وضعیت" Binding="{Binding Status}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <Grid x:Name="SearchPage" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="جستجو در نماد و نام شرکت" Foreground="{StaticResource MutedBrush}"/>
+                            <TextBox x:Name="SymbolSearchTextBox" Margin="0,8,0,0" TextChanged="SymbolSearchTextBox_TextChanged"/>
+                        </StackPanel>
+                    </Border>
+                    <DataGrid x:Name="SearchDataGrid" Grid.Row="1" Style="{StaticResource DataGridStyle}" MouseDoubleClick="StockDataGrid_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="نماد" Binding="{Binding Symbol}" Width="110"/>
+                            <DataGridTextColumn Header="نام شرکت" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="آخرین قیمت" Binding="{Binding LastPrice, StringFormat={}{0:N0}}" Width="120"/>
+                            <DataGridTextColumn Header="قیمت پایانی" Binding="{Binding ClosingPrice, StringFormat={}{0:N0}}" Width="120"/>
+                            <DataGridTextColumn Header="تغییر" Binding="{Binding ClosingChangePercent, StringFormat={}{0:+0.00;-0.00;0.00}%}" Width="100"/>
+                            <DataGridTextColumn Header="وضعیت" Binding="{Binding Status}" Width="110"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <Grid x:Name="CodalPage" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="جستجو در اطلاعیه‌های ذخیره‌شده کدال" Foreground="{StaticResource MutedBrush}"/>
+                            <TextBox x:Name="CodalSearchTextBox" Margin="0,8,0,0" TextChanged="CodalSearchTextBox_TextChanged"/>
+                        </StackPanel>
+                    </Border>
+                    <DataGrid x:Name="CodalDataGrid" Grid.Row="1" Style="{StaticResource DataGridStyle}" MouseDoubleClick="CodalDataGrid_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="نماد" Binding="{Binding Symbol}" Width="90"/>
+                            <DataGridTextColumn Header="شرکت" Binding="{Binding CompanyName}" Width="180"/>
+                            <DataGridTextColumn Header="عنوان اطلاعیه" Binding="{Binding Title}" Width="*"/>
+                            <DataGridTextColumn Header="تاریخ انتشار" Binding="{Binding PublishDateTime}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <ScrollViewer x:Name="SettingsPage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                    <StackPanel MaxWidth="760" HorizontalAlignment="Right">
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="به‌روزرسانی خودکار" FontSize="18" FontWeight="SemiBold"/>
+                                <CheckBox x:Name="AutoUpdateCheckBox" Content="دریافت خودکار داده‌ها در زمان اجرای برنامه" Margin="0,16,0,0"/>
+                                <TextBlock Text="فاصله به‌روزرسانی (دقیقه، بین ۵ تا ۲۴۰)" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,6"/>
+                                <TextBox x:Name="UpdateIntervalTextBox" Width="180" HorizontalAlignment="Right" FlowDirection="LeftToRight"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource CardStyle}" Margin="0,14,0,0">
+                            <StackPanel>
+                                <TextBlock Text="داده تاریخی برای تحلیل" FontSize="18" FontWeight="SemiBold"/>
+                                <TextBlock Text="تعداد روزهای تاریخچه (۳۰ تا ۵۰۰)" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,6"/>
+                                <TextBox x:Name="HistoryDaysTextBox" Width="180" HorizontalAlignment="Right" FlowDirection="LeftToRight"/>
+                                <TextBlock Text="تعداد نمادهای پرتراکنش برای تحلیل خودکار (۱۰ تا ۱۰۰۰)" Foreground="{StaticResource MutedBrush}" Margin="0,16,0,6"/>
+                                <TextBox x:Name="HistoryLimitTextBox" Width="180" HorizontalAlignment="Right" FlowDirection="LeftToRight"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource CardStyle}" Margin="0,14,0,0">
+                            <StackPanel>
+                                <TextBlock Text="محل ذخیره اطلاعات" FontSize="18" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="DataDirectoryText" Margin="0,12,0,0" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" FlowDirection="LeftToRight" TextAlignment="Right"/>
+                            </StackPanel>
+                        </Border>
+                        <Button Content="ذخیره تنظیمات" Click="SaveSettingsButton_Click" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Right" Margin="0,16,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <Border Grid.Row="2" Background="White" BorderBrush="#E2E8F0" BorderThickness="0,1,0,0">
+                <Grid Margin="24,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="SyncStageText" Text="آماده" FontWeight="SemiBold" Foreground="#334155"/>
+                        <TextBlock x:Name="SyncPercentText" Grid.Column="1" Text="۰٪" Foreground="{StaticResource MutedBrush}" FlowDirection="LeftToRight"/>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0,7,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="300"/>
+                        </Grid.ColumnDefinitions>
+                        <ProgressBar x:Name="SyncProgressBar" Height="8" Minimum="0" Maximum="100" Value="0" Foreground="{StaticResource PrimaryBrush}"/>
+                        <TextBlock x:Name="SyncDetailText" Grid.Column="1" Text="برای دریافت داده، به‌روزرسانی را اجرا کنید" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="16,0,0,0" TextTrimming="CharacterEllipsis"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
-    <TextBlock Text="نمادهای منتخب" FontSize="24" Margin="5,25,5,10"/>
-    <DataGrid AutoGenerateColumns="True" Height="200" Margin="5">
-     <DataGrid.Items>
-      <local:StockItem Symbol="فولاد" Price="5200" Change="+2%" Status="خرید"/>
-      <local:StockItem Symbol="شستا" Price="1450" Change="-1%" Status="نگهداری"/>
-      <local:StockItem Symbol="خودرو" Price="320" Change="+0.5%" Status="بررسی"/>
-     </DataGrid.Items>
-    </DataGrid>
-   </StackPanel>
-  </ScrollViewer>
- </Grid>
 </Window>

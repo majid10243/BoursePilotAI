@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+.vs/
+Release/App/
+Release/InstallerFiles/
+Release/*.exe
+Installer/*.exe
+*.user
+*.suo
