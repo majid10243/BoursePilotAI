@@ -1,3 +1,7 @@
 # Source Code
 
-Main application source files will be placed here.
+پروژه اصلی در `BoursePilotAI.App` قرار دارد و یک برنامه WPF مبتنی بر .NET 8 است.
+
+- `Models`: مدل‌های بازار، تاریخچه، کدال و تنظیمات
+- `Services`: دریافت داده، ذخیره محلی، همگام‌سازی و تحلیل
+- `MainWindow`: رابط داشبورد، اسکنر، جستجو، کدال و تنظیمات
