@@ -8,4 +8,10 @@
     <AssemblyName>BoursePilotAI</AssemblyName>
     <RootNamespace>BoursePilotAI</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

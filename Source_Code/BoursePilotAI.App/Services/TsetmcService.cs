@@ -7,19 +7,19 @@ namespace BoursePilotAI.Services;
 
 public sealed class TsetmcService
 {
-    private const string MarketWatchUrl =
-        "https://cdn.tsetmc.com/api/ClosingPrice/GetMarketWatch?market=0&industrialGroup=&paperTypes%5B0%5D=1&showTraded=false&withBestLimits=true&hEven=0&RefID=0";
-
     private readonly HttpClient _httpClient;
+    private readonly TsetmcOptions _options;
 
-    public TsetmcService(HttpClient httpClient)
+    public TsetmcService(HttpClient httpClient, TsetmcOptions options)
     {
         _httpClient = httpClient;
+        _options = options ?? new TsetmcOptions();
+        _options.Validate();
     }
 
     public async Task<IReadOnlyList<StockItem>> GetMarketWatchAsync(CancellationToken cancellationToken)
     {
-        using var document = await GetJsonWithRetryAsync(MarketWatchUrl, cancellationToken);
+        using var document = await GetJsonWithRetryAsync(_options.BuildMarketWatchUri(), cancellationToken);
         var now = DateTimeOffset.Now;
         var stocks = document.RootElement
             .FindArrayItems("marketwatch", "marketWatch")
@@ -46,7 +46,7 @@ public sealed class TsetmcService
         if (safeCode.Length == 0)
             return Array.Empty<PriceHistoryItem>();
 
-        var url = $"https://cdn.tsetmc.com/api/ClosingPrice/GetClosingPriceDailyList/{safeCode}/{days}";
+        var url = _options.BuildHistoryUri(insCode, days);
         using var document = await GetJsonWithRetryAsync(url, cancellationToken);
         var history = document.RootElement
             .FindArrayItems("closingPriceDaily", "closingPriceDailyList")
@@ -61,10 +61,11 @@ public sealed class TsetmcService
         return history;
     }
 
-    private async Task<JsonDocument> GetJsonWithRetryAsync(string url, CancellationToken cancellationToken)
+    private async Task<JsonDocument> GetJsonWithRetryAsync(Uri url, CancellationToken cancellationToken)
     {
+        var retries = _options.RetryCount;
         Exception? lastError = null;
-        for (var attempt = 1; attempt <= 3; attempt++)
+        for (var attempt = 1; attempt <= retries; attempt++)
         {
             try
             {
@@ -81,7 +82,7 @@ public sealed class TsetmcService
                     (int)response.StatusCode >= 500)
                 {
                     lastError = new HttpRequestException($"TSETMC پاسخ {(int)response.StatusCode} داد.");
-                    if (attempt < 3)
+                    if (attempt < retries)
                     {
                         await Task.Delay(TimeSpan.FromSeconds(attempt * 2), cancellationToken);
                         continue;
@@ -101,11 +102,12 @@ public sealed class TsetmcService
                 lastError = ex;
             }
 
-            if (attempt < 3)
+            if (attempt < retries)
                 await Task.Delay(TimeSpan.FromSeconds(attempt * 2), cancellationToken);
         }
 
-        throw new HttpRequestException("دریافت داده از TSETMC پس از سه تلاش ناموفق بود.", lastError);
+        throw new HttpRequestException(
+            $"دریافت داده از TSETMC پس از {retries} تلاش ناموفق بود.", lastError);
     }
 
     private static StockItem ParseMarketItem(JsonElement item, DateTimeOffset updatedAt)

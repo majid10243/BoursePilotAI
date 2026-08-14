@@ -41,14 +41,14 @@ public partial class MainWindow : Window
             AutomaticDecompression = DecompressionMethods.All
         })
         {
-            Timeout = TimeSpan.FromSeconds(45)
+            Timeout = App.TsetmcOptions.Timeout
         };
         _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 BoursePilotAI/1.1");
 
         _store = new LocalDataStore();
         _syncService = new DataSyncService(
-            new TsetmcService(_httpClient),
+            new TsetmcService(_httpClient, App.TsetmcOptions),
             new CodalService(_httpClient),
             _store,
             new StockAnalyzer());
