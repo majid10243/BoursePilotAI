@@ -1,3 +1,5 @@
+using System;
+
 namespace BoursePilotAI.Models;
 
 public sealed class AppSettings

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace BoursePilotAI.Models;
 
 public sealed record SyncProgress(int Percent, string Stage, string Detail);
